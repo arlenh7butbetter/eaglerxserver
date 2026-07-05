@@ -408,6 +408,15 @@ public class BufferUtils {
 		return idlength + blocklightlength + skylightlength + biomeslength;
 	}
 
+	/*
+	  Dear whoever is reading this and trying to fork this.
+	  I hope you have a BLESSED day trying to read this, because this took me a good while to understand before making changes.
+	  I fucking HATE and I ABSOLUTELY FUCKING DESPISE THIS.
+	  MATCHING PROTOCOL VERSIONS TO LEGACY IS A FUCKING NIGHTMARE AND I HATE IT
+	  THIS IS ON PAR WITH PORTING A MODERN VERSION, IF NOT WORSE
+	  
+	  But with that, I hope you have a good day and I hope you can understand this code, because I sure as hell can't anymore.
+	*/
 	public static void convertChunk2Legacy(int bitmap, int data18len, ByteBuf data18, ByteBuf bb) {
 		int absInd = data18.readerIndex();
 		int absWInd = bb.writerIndex();

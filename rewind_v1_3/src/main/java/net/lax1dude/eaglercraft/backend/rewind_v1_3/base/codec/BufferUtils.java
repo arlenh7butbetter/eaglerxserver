@@ -16,7 +16,9 @@
 
 package net.lax1dude.eaglercraft.backend.rewind_v1_3.base.codec;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.Deflater;
@@ -411,11 +413,35 @@ public class BufferUtils {
 		int absWInd = bb.writerIndex();
 		int count = Integer.bitCount(bitmap);
 		int guh1 = 8192 * count;
-		int guh = data18len - guh1;
-		int guh2 = count * (4096 + 2048);
-		int count2 = 8192 * count;
-		int count3 = 4096 * count;
-		bb.ensureWritable(guh2 + guh);
+		int guh = 4096 * count;
+		int guh2 = 2048 * count;
+		int count2 = guh1 + guh;
+		int count3 = data18len - guh1;
+		if(count3 < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		boolean fuhthis;
+		boolean killmeNOWNOWNOW;
+		int blockLightOffset = absInd + guh1;
+		int skyLightOffset = blockLightOffset + guh2;
+		int biomeOffset;
+		if(count3 == guh2) {
+			fuhthis = false;
+			killmeNOWNOWNOW = false;
+			biomeOffset = skyLightOffset;
+		} else if (count3 == guh2 + 256) {
+			fuhthis = true;
+			killmeNOWNOWNOW = false;
+			biomeOffset = skyLightOffset + guh2;
+		} else if (count3 == guh2 + 256 + 256) {
+			fuhthis = true;
+			killmeNOWNOWNOW = true;
+			biomeOffset = skyLightOffset + guh2 + 256;
+		} else {
+			throw new IndexOutOfBoundsException();
+		}
+		int outputLength = count2 + guh2 + guh2 + (killmeNOWNOWNOW ? 256 : 0);
+		bb.ensureWritable(outputLength);
 
 		if (LITTLE_ENDIAN_SUPPORT) {
 			for (int i = 0; i < count2; i += 4) {
@@ -434,14 +460,24 @@ public class BufferUtils {
 			}
 		}
 
-		if (guh == 256 && data18.readableBytes() - (absInd + guh1) < 256) {
-			bb.setZero(absWInd + guh2, 256);
-			data18.skipBytes(data18len - 256);
+		// dear god this is so fucking stupid but it works and i hate it i fucking hate my life KILL ME NOW NOW NOW
+		if (guh2 > 0) {
+			data18.getBytes(blockLightOffset, bb, absWInd + count2, guh2);
+			if(fuhthis) {
+				data18.getBytes(skyLightOffset, bb, absWInd + count2 + guh2, guh2);
+			} else {
+				bb.setZero(absWInd + count2 + guh2, guh2);
+			}
 		} else {
 			data18.getBytes(absInd + guh1, bb, absWInd + guh2, guh);
 			data18.skipBytes(data18len);
 		}
+		if(killmeNOWNOWNOW) {
+			data18.getBytes(biomeOffset, bb, absWInd + count2 + guh2 + guh2, 256);
+		}
 		bb.writerIndex(absWInd + guh2 + guh);
+		data18.skipBytes(data18len);
+		bb.writerIndex(absWInd + outputLength);
 	}
 
 	public static int sizeEstimateNotDeflated(int srcLen) {

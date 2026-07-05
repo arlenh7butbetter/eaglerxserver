@@ -281,7 +281,7 @@ public class RewindPacketDecoder<PlayerObject> extends RewindChannelHandler.Deco
 				BufferUtils.writeVarInt(bb, 0x12);
 				bb.writeLong(BufferUtils.createPosition(in.readInt(), in.readShort(), in.readInt()));
 				for (int ii = 0; ii < 4; ++ii) {
-					BufferUtils.writeMCString(bb, "\"" + BufferUtils.readLegacyMCString(in, 255)
+					BufferUtils.writeMCString(bb, "\"" + BufferUtils.readLegacyMCString(in, 15)
 							.replaceAll("\\\\", "\\\\").replaceAll("\"", "\\\\\"") + "\"", 4095);
 				}
 				if (in.isReadable())
@@ -291,15 +291,15 @@ public class RewindPacketDecoder<PlayerObject> extends RewindChannelHandler.Deco
 				bb = ctx.alloc().buffer();
 				BufferUtils.writeVarInt(bb, 0x13);
 				bb.writeByte(in.readByte());
-				bb.writeFloat(in.readByte());
-				bb.writeFloat(in.readByte());
+				bb.writeFloat((float) in.readByte() / 63.0F);
+				bb.writeFloat((float) in.readByte() / 63.0F);
 				if (in.isReadable())
 					throw new IndexOutOfBoundsException();
 				break;
 			case 0xCB:
 				bb = ctx.alloc().buffer();
 				BufferUtils.writeVarInt(bb, 0x14);
-				BufferUtils.convertLegacyMCString(in, bb, 255);
+				BufferUtils.convertLegacyMCString(in, bb, 119);
 				if (in.isReadable())
 					throw new IndexOutOfBoundsException();
 				bb.writeBoolean(false);
@@ -307,13 +307,13 @@ public class RewindPacketDecoder<PlayerObject> extends RewindChannelHandler.Deco
 			case 0xCC:
 				bb = ctx.alloc().buffer();
 				BufferUtils.writeVarInt(bb, 0x15);
-				BufferUtils.convertLegacyMCString(in, bb, 255);
+				BufferUtils.convertLegacyMCString(in, bb, 7);
 				bb.writeByte(16 >> in.readByte());
 				byte guh = in.readByte();
 				bb.writeByte(guh & 3);
 				bb.writeBoolean((guh & 8) != 0);
 				in.readByte();
-				bb.writeByte(in.readBoolean() ? 0xFF : 0xFE);
+				bb.writeByte(0x7F);
 				if (in.isReadable())
 					throw new IndexOutOfBoundsException();
 				break;
@@ -325,7 +325,7 @@ public class RewindPacketDecoder<PlayerObject> extends RewindChannelHandler.Deco
 				BufferUtils.writeVarInt(bb, 0);
 				break;
 			case 0xFA:
-				String name = BufferUtils.readLegacyMCString(in, 255);
+				String name = BufferUtils.readLegacyMCString(in, 20);
 				int pmLen = in.readUnsignedShort();
 				if (in.readableBytes() != pmLen) {
 					throw new IndexOutOfBoundsException();

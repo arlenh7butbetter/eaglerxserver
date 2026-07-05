@@ -215,9 +215,11 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		bb.writeBoolean(false);
 	}
 
-	private void handleHeldItemChange(ByteBuf in, ByteBuf bb) {
-		bb.writeByte(0x10);
-		bb.writeShort(in.readByte());
+	private void handleHeldItemChange(ByteBuf in) {
+		in.readByte();
+		if (in.isReadable()) {
+			throw new IndexOutOfBoundsException();
+		}
 	}
 
 	private void handleUseBed(ByteBuf in, ByteBuf bb) {
@@ -1612,8 +1614,7 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 				handlePlayerPositionAndLook(in, bb);
 				break;
 			case 0x09:
-				bb = ctx.alloc().buffer();
-				handleHeldItemChange(in, bb);
+				handleHeldItemChange(in);
 				break;
 			case 0x0A:
 				bb = ctx.alloc().buffer();

@@ -33,7 +33,7 @@ import net.lax1dude.eaglercraft.backend.server.api.collect.ObjectObjectMap;
 
 public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Encoder<PlayerObject> {
 
-	public static final boolean OLD_CHUNK_FORMAT = Boolean.getBoolean("eaglerxrewind.oldChunkFormat");
+	public static final boolean OLD_CHUNK_FORMAT = !"false".equalsIgnoreCase(System.getProperty("eaglerxrewind.oldChunkFormat", "true"));
 
 	private final HPPC hppc;
 	private final ObjectObjectMap<String, ObjectIntMap<String>> scoreBoard;

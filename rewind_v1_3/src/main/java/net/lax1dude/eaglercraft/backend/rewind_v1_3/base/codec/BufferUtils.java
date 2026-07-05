@@ -415,9 +415,9 @@ public class BufferUtils {
 		int guh1 = 8192 * count;
 		int guh = 4096 * count;
 		int guh2 = 2048 * count;
-		int count2 = guh1 + guh;
+		int count2 = guh + guh2;
 		int count3 = data18len - guh1;
-		if(count3 < 0) {
+		if(count3 < 0 || data18.readableBytes() < data18len) {
 			throw new IndexOutOfBoundsException();
 		}
 		boolean fuhthis;
@@ -430,52 +430,48 @@ public class BufferUtils {
 			killmeNOWNOWNOW = false;
 			biomeOffset = skyLightOffset;
 		} else if (count3 == guh2 + 256) {
+			fuhthis = false;
+			killmeNOWNOWNOW = true;
+			biomeOffset = blockLightOffset + guh2;
+		} else if (count3 == guh2 + guh2) {
 			fuhthis = true;
 			killmeNOWNOWNOW = false;
 			biomeOffset = skyLightOffset + guh2;
-		} else if (count3 == guh2 + 256 + 256) {
+		} else if (count3 == guh2 + guh2 + 256) {
 			fuhthis = true;
 			killmeNOWNOWNOW = true;
-			biomeOffset = skyLightOffset + guh2 + 256;
+			biomeOffset = skyLightOffset + guh2;
 		} else {
 			throw new IndexOutOfBoundsException();
 		}
-		int outputLength = count2 + guh2 + guh2 + (killmeNOWNOWNOW ? 256 : 0);
+		int outputLength = count2 + guh2 + (fuhthis ? guh2 : 0) + (killmeNOWNOWNOW ? 256 : 0);
 		bb.ensureWritable(outputLength);
 
 		if (LITTLE_ENDIAN_SUPPORT) {
-			for (int i = 0; i < count2; i += 4) {
+			for (int i = 0; i < guh1; i += 4) {
 				int state = data18.getIntLE(absInd + i);
 				bb.setShortLE(absWInd + (i >> 1),
 						convertType2Legacy((state >>> 4) & 0xFFF) | (convertType2Legacy(state >>> 20) << 8));
-				bb.setByte(absWInd + count3 + (i >> 2), (byte) ((state & 0xF) | (((state >>> 16) & 0xF) << 4)));
+				bb.setByte(absWInd + guh + (i >> 2), (byte) ((state & 0xF) | (((state >>> 16) & 0xF) << 4)));
 			}
 		} else {
-			for (int i = 0; i < count2; i += 4) {
+			for (int i = 0; i < guh1; i += 4) {
 				int stateA = data18.getUnsignedByte(absInd + i) | (data18.getUnsignedByte(absInd + i + 1) << 8);
 				int stateB = data18.getUnsignedByte(absInd + i + 2) | (data18.getUnsignedByte(absInd + i + 3) << 8);
 				bb.setByte(absWInd + (i >> 1), convertType2Legacy(stateA >> 4));
 				bb.setByte(absWInd + (i >> 1) + 1, convertType2Legacy(stateB >> 4));
-				bb.setByte(absWInd + count3 + (i >> 2), (byte) ((stateA & 0xF) | ((stateB & 0xF) << 4)));
+				bb.setByte(absWInd + guh + (i >> 2), (byte) ((stateA & 0xF) | ((stateB & 0xF) << 4)));
 			}
 		}
 
 		// dear god this is so fucking stupid but it works and i hate it i fucking hate my life KILL ME NOW NOW NOW
-		if (guh2 > 0) {
-			data18.getBytes(blockLightOffset, bb, absWInd + count2, guh2);
-			if(fuhthis) {
-				data18.getBytes(skyLightOffset, bb, absWInd + count2 + guh2, guh2);
-			} else {
-				bb.setZero(absWInd + count2 + guh2, guh2);
-			}
-		} else {
-			data18.getBytes(absInd + guh1, bb, absWInd + guh2, guh);
-			data18.skipBytes(data18len);
+		data18.getBytes(blockLightOffset, bb, absWInd + count2, guh2);
+		if(fuhthis) {
+			data18.getBytes(skyLightOffset, bb, absWInd + count2 + guh2, guh2);
 		}
 		if(killmeNOWNOWNOW) {
-			data18.getBytes(biomeOffset, bb, absWInd + count2 + guh2 + guh2, 256);
+			data18.getBytes(biomeOffset, bb, absWInd + count2 + guh2 + (fuhthis ? guh2 : 0), 256);
 		}
-		bb.writerIndex(absWInd + guh2 + guh);
 		data18.skipBytes(data18len);
 		bb.writerIndex(absWInd + outputLength);
 	}

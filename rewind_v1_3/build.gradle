@@ -11,9 +11,9 @@ configurations {
 }
 
 dependencies {
-	platformBukkit project(":rewind_v1_5:rewind_v1_5-platform-bukkit")
-	platformBungee project(":rewind_v1_5:rewind_v1_5-platform-bungee")
-	platformVelocity project(":rewind_v1_5:rewind_v1_5-platform-velocity")
+	platformBukkit project(":rewind_v1_3:rewind_v1_3-platform-bukkit")
+	platformBungee project(":rewind_v1_3:rewind_v1_3-platform-bungee")
+	platformVelocity project(":rewind_v1_3:rewind_v1_3-platform-velocity")
 	compileOnly project(":api")
 	compileOnly(libs.bundles.netty.all)
 	compileOnly(libs.guava)

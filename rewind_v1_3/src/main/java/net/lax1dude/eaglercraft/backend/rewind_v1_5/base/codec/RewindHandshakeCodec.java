@@ -122,7 +122,7 @@ public class RewindHandshakeCodec<PlayerObject> extends RewindChannelHandler.Cod
 				packet.writeByte(BRAND_UUID_V1_STR.length);
 				packet.writeBytes(BRAND_UUID_V1_STR);
 				packet.writeShort(16);
-				UUID uuid = RewindProtocol.BRAND_EAGLERXREWIND_1_5_2;
+				UUID uuid = RewindProtocol.BRAND_EAGLERXREWIND_1_3_2;
 				packet.writeLong(uuid.getMostSignificantBits());
 				packet.writeLong(uuid.getLeastSignificantBits());
 				output.add(packet.retain());

@@ -11,7 +11,7 @@ a.k.a. "EaglerXServer"
 
 ## Key Features
 
-- **EaglercraftX 1.8, Eaglercraft 1.12.2, and Eaglercraft 1.5.2 clients are supported**
+- **EaglercraftX 1.8, Eaglercraft 1.12.2, and Eaglercraft 1.3.2 clients are supported**
 - **Install on Spigot, BungeeCord, or Velocity from only a single JAR file**
 - **Access dozens of exclusive Eaglercraft features through a cross-platform API**
 - **Install packet translator modules for legacy protocol versions (1.5, 1.6, beta, etc)**
@@ -20,12 +20,12 @@ a.k.a. "EaglerXServer"
 
 ## Downloads
 
-**If you lack the motivation to figure this out yourself, you can get started quickly by downloading a complete Paper 1.12.2 Eaglercraft server distribution from [https://github.com/Eaglercraft-Templates/Eaglercraft-Server-Paper](https://github.com/Eaglercraft-Templates/Eaglercraft-Server-Paper) that supports EaglercraftX 1.8, Eaglercraft 1.12.2, and Eaglercraft 1.5.2 clients all from a single server.**
+**If you lack the motivation to figure this out yourself, you can get started quickly by downloading a complete Paper 1.12.2 Eaglercraft server distribution from [https://github.com/Eaglercraft-Templates/Eaglercraft-Server-Paper](https://github.com/Eaglercraft-Templates/Eaglercraft-Server-Paper) that supports EaglercraftX 1.8, Eaglercraft 1.12.2, and Eaglercraft 1.3.2 clients all from a single server.**
 
 Please see the [Releases](https://github.com/lax1dude/eaglerxserver/releases) tab to get the latest stable binaries, the available files are:
 
 - **EaglerXServer** - The core EaglercraftXServer plugin for Spigot, BungeeCord, and Velocity
-- **EaglerXRewind** - Add support for Eaglercraft 1.5.2 by translating the packets to 1.8 like ViaVersion
+- **EaglerXRewind** - Add support for Eaglercraft 1.3.2 by translating the packets to 1.8 like ViaVersion
 - **EaglerXBackendRPC** - Access the API of a BungeeCord/Velocity eagler server from Spigot
 - **EaglerMOTD** - A port of the EaglerMOTD plugin to the EaglercraftXServer API
 - **EaglerWeb** - Allows you to host files via HTTP from your server address

@@ -156,7 +156,7 @@ Generated from the source code of EaglerXServer 1.1.0
 
 ## <small>`/settings.cfg` &gt; `protocols` : `eaglerxrewind_allowed`&emsp;<sub>(Bukkit, BungeeCord, Velocity)</sub></small>
 **Summary:**
-- If legacy clients (like eagler 1.5.2) should be allowed to join (emulates an EaglercraftX 1.8 connection), has no effect unless the EaglerXRewind plugin is installed.&emsp;<sub>(Bukkit, BungeeCord, Velocity)</sub>
+- If legacy clients (like eagler 1.3.2) should be allowed to join (emulates an EaglercraftX 1.8 connection), has no effect unless the EaglerXRewind plugin is installed.&emsp;<sub>(Bukkit, BungeeCord, Velocity)</sub>
 
 **Defaults:**
 - `true`&emsp;<sub>(Bukkit, BungeeCord, Velocity)</sub>

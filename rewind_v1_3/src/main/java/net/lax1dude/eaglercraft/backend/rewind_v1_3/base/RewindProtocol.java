@@ -110,7 +110,7 @@ public class RewindProtocol<PlayerObject> implements IEaglerXRewindProtocol<Play
 
 	@Override
 	public int[] getLegacyProtocols() {
-		return new int[] { 69 };
+		return new int[] { 39 };
 	}
 
 	@Override

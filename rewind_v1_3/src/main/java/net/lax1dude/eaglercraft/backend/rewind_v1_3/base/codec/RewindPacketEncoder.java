@@ -16,7 +16,8 @@
 
 package net.lax1dude.eaglercraft.backend.rewind_v1_3.base.codec;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -134,7 +135,7 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		} catch (IllegalArgumentException ignored) {
 			//
 		}
-		BufferUtils.writeLegacyMCString(bb, msg, 32767);
+		BufferUtils.writeLegacyMCString(bb, msg, 119);
 	}
 
 	private void handleTimeUpdate(ByteBuf in, ByteBuf bb) {
@@ -323,8 +324,6 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		bb.writeInt(x);
 		bb.writeInt(y);
 		bb.writeInt(z);
-		bb.writeByte(pitch);
-		bb.writeByte(yaw);
 		bb.writeInt(odata);
 		if (odata > 0) {
 			bb.writeShort(in.readShort());
@@ -353,9 +352,9 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		byte myaw = in.readByte();
 		byte mpitch = in.readByte();
 		byte mhpitch = in.readByte();
+		bb.writeByte(myaw);
 		bb.writeByte(mpitch);
 		bb.writeByte(mhpitch);
-		bb.writeByte(myaw);
 		bb.writeShort(in.readShort());
 		bb.writeShort(in.readShort());
 		bb.writeShort(in.readShort());
@@ -650,7 +649,8 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 			tmpInts[ii + b] = in.readUnsignedShort();
 		}
 		int aaaa = bb.writerIndex();
-		bb.writerIndex(aaaa + 7);
+		int yeah = OLD_CHUNK_FORMAT ? 6 : 7;
+		bb.writerIndex(aaaa + yeah);
 		if (OLD_CHUNK_FORMAT) {
 			int c = mcbCcc * 3;
 			int size = 0;
@@ -680,13 +680,15 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		}
 		bb.setShort(aaaa, mcbCcc);
 		aaaa += 2;
-		int cringe = bb.writerIndex() - (aaaa + (4 + 1));
+		int cringe = bb.writerIndex() - (aaaa + (OLD_CHUNK_FORMAT ? 4 : 5));
 		if (!OLD_CHUNK_FORMAT) {
 			cringe |= 0x10000000;
 		}
 		bb.setInt(aaaa, cringe);
 		aaaa += 4;
-		bb.setBoolean(aaaa, mcbSkyLightSent);
+		if (!OLD_CHUNK_FORMAT) {
+			bb.setBoolean(aaaa, mcbSkyLightSent);
+		}
 		// aaaa += 1;
 		for (int ii = 0; ii < mcbCcc; ++ii) {
 			bb.writeInt(tmpInts[ii]);
@@ -754,7 +756,7 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 			sound = "liquid.splash";
 			break;
 		}
-		BufferUtils.writeLegacyMCString(bb, sound, 255);
+		BufferUtils.writeLegacyMCString(bb, sound, 32);
 		bb.writeInt(in.readInt());
 		bb.writeInt(in.readInt());
 		bb.writeInt(in.readInt());
@@ -898,7 +900,7 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		} catch (IllegalArgumentException ignored) {
 			//
 		}
-		BufferUtils.writeLegacyMCString(bb, windowTitle, 255);
+		BufferUtils.writeLegacyMCString(bb, windowTitle, 32);
 		bb.writeByte(in.readUnsignedByte());
 		bb.writeBoolean(!windowTitle.isEmpty());
 	}
@@ -1546,7 +1548,7 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		ByteBuf bb = alloc.buffer();
 		try {
 			bb.writeByte(0xFA);
-			BufferUtils.writeLegacyMCString(bb, name, 255);
+			BufferUtils.writeLegacyMCString(bb, name, 20);
 			int pmLen = in.readableBytes();
 			bb.writeShort(pmLen);
 			bb.writeBytes(in, pmLen);
@@ -1564,7 +1566,7 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 		} catch (IllegalArgumentException ignored) {
 			//
 		}
-		BufferUtils.writeLegacyMCString(bb, msg, 32767);
+		BufferUtils.writeLegacyMCString(bb, msg, 256);
 	}
 
 	@Override
@@ -1792,19 +1794,10 @@ public class RewindPacketEncoder<PlayerObject> extends RewindChannelHandler.Enco
 				handleTabComplete(in, bb);
 				break;
 			case 0x3B:
-				bb = ctx.alloc().buffer();
-				handleScoreboardObjective(in, bb);
-				break;
 			case 0x3C:
-				handleUpdateScore(in, ctx.alloc(), out);
-				break;
 			case 0x3D:
-				bb = ctx.alloc().buffer();
-				handleDisplayScoreboard(in, bb);
-				break;
 			case 0x3E:
-				bb = ctx.alloc().buffer();
-				handleTeams(in, bb);
+				in.skipBytes(in.readableBytes());
 				break;
 			case 0x3F:
 				bb = handlePluginMessage(in, ctx.alloc());
